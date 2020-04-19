@@ -49,6 +49,20 @@ fn main() -> ! {
             8400,
             true,
         ),
+        knee_front_left: &PwmServo::new(
+            pin!(pins, dig5),
+            &pwm1,
+            1000,
+            8400,
+            true,
+        ),
+        knee_front_right: &PwmServo::new(
+            pin!(pins, dig6),
+            &pwm1,
+            1000,
+            8400,
+            false,
+        ),
         hip_rear_left: &PwmServo::new(
             pin!(pins, dig16),
             &pwm2,
@@ -58,6 +72,20 @@ fn main() -> ! {
         ),
         hip_rear_right: &PwmServo::new(
             pin!(pins, dig17),
+            &pwm2,
+            1000,
+            8400,
+            false,
+        ),
+        knee_rear_left: &PwmServo::new(
+            pin!(pins, dig18),
+            &pwm2,
+            1000,
+            8400,
+            true,
+        ),
+        knee_rear_right: &PwmServo::new(
+            pin!(pins, dig19),
             &pwm2,
             1000,
             8400,
@@ -77,6 +105,10 @@ struct ALLBOT<'a> {
     hip_front_right: &'a dyn Servo,
     hip_rear_left: &'a dyn Servo,
     hip_rear_right: &'a dyn Servo,
+    knee_front_left: &'a dyn Servo,
+    knee_front_right: &'a dyn Servo,
+    knee_rear_left: &'a dyn Servo,
+    knee_rear_right: &'a dyn Servo,
 }
 
 impl<'a> ALLBOT<'a> {
@@ -85,6 +117,10 @@ impl<'a> ALLBOT<'a> {
         self.hip_front_right.write(90.0.degrees());
         self.hip_rear_left.write(90.0.degrees());
         self.hip_rear_right.write(90.0.degrees());
+        self.knee_front_left.write(90.0.degrees());
+        self.knee_front_right.write(90.0.degrees());
+        self.knee_rear_left.write(90.0.degrees());
+        self.knee_rear_right.write(90.0.degrees());
     }
 
     fn test(&self, sleep: &mut Sleep, speed: u32) {
@@ -94,6 +130,10 @@ impl<'a> ALLBOT<'a> {
                 Move::new(self.hip_front_right, 45.0.degrees()),
                 Move::new(self.hip_rear_left, 45.0.degrees()),
                 Move::new(self.hip_rear_right, 45.0.degrees()),
+                Move::new(self.knee_front_left, 45.0.degrees()),
+                Move::new(self.knee_front_right, 45.0.degrees()),
+                Move::new(self.knee_rear_left, 45.0.degrees()),
+                Move::new(self.knee_rear_right, 45.0.degrees()),
             ],
             speed,
             sleep,
@@ -105,6 +145,10 @@ impl<'a> ALLBOT<'a> {
                 Move::new(self.hip_front_right, 90.0.degrees()),
                 Move::new(self.hip_rear_left, 90.0.degrees()),
                 Move::new(self.hip_rear_right, 90.0.degrees()),
+                Move::new(self.knee_front_left, 90.0.degrees()),
+                Move::new(self.knee_front_right, 90.0.degrees()),
+                Move::new(self.knee_rear_left, 90.0.degrees()),
+                Move::new(self.knee_rear_right, 90.0.degrees()),
             ],
             speed,
             sleep,
@@ -252,6 +296,62 @@ impl
 impl
     PwmServoConstructor<
         '_,
+        gpio0::Pin21<Unknown>,
+        gpio0::Pin21<IOF1<Invert>>,
+        PWM1,
+    > for PwmServo<'_, gpio0::Pin20<IOF1<Invert>>, PWM1>
+{
+    fn new(
+        pin: gpio0::Pin21<Unknown>,
+        pwm: &PWM1,
+        duty_at_0_degrees: u16,
+        duty_at_180_degrees: u16,
+        inverted: bool,
+    ) -> PwmServo<'_, gpio0::Pin21<IOF1<Invert>>, PWM1> {
+        pwm.cfg
+            .write(|w| unsafe { w.enalways().bit(true).scale().bits(6) });
+
+        PwmServo {
+            _pin: pin.into_inverted_iof1(),
+            pwm: pwm,
+            duty_at_0_degrees,
+            duty_at_180_degrees,
+            inverted,
+        }
+    }
+}
+
+impl
+    PwmServoConstructor<
+        '_,
+        gpio0::Pin22<Unknown>,
+        gpio0::Pin22<IOF1<Invert>>,
+        PWM1,
+    > for PwmServo<'_, gpio0::Pin22<IOF1<Invert>>, PWM1>
+{
+    fn new(
+        pin: gpio0::Pin22<Unknown>,
+        pwm: &PWM1,
+        duty_at_0_degrees: u16,
+        duty_at_180_degrees: u16,
+        inverted: bool,
+    ) -> PwmServo<'_, gpio0::Pin22<IOF1<Invert>>, PWM1> {
+        pwm.cfg
+            .write(|w| unsafe { w.enalways().bit(true).scale().bits(6) });
+
+        PwmServo {
+            _pin: pin.into_inverted_iof1(),
+            pwm: pwm,
+            duty_at_0_degrees,
+            duty_at_180_degrees,
+            inverted,
+        }
+    }
+}
+
+impl
+    PwmServoConstructor<
+        '_,
         gpio0::Pin19<Unknown>,
         gpio0::Pin19<IOF1<Invert>>,
         PWM1,
@@ -333,6 +433,62 @@ impl
     }
 }
 
+impl
+    PwmServoConstructor<
+        '_,
+        gpio0::Pin12<Unknown>,
+        gpio0::Pin12<IOF1<Invert>>,
+        PWM2,
+    > for PwmServo<'_, gpio0::Pin12<IOF1<Invert>>, PWM2>
+{
+    fn new(
+        pin: gpio0::Pin12<Unknown>,
+        pwm: &PWM2,
+        duty_at_0_degrees: u16,
+        duty_at_180_degrees: u16,
+        inverted: bool,
+    ) -> PwmServo<'_, gpio0::Pin12<IOF1<Invert>>, PWM2> {
+        pwm.cfg
+            .write(|w| unsafe { w.enalways().bit(true).scale().bits(6) });
+
+        PwmServo {
+            _pin: pin.into_inverted_iof1(),
+            pwm: pwm,
+            duty_at_0_degrees,
+            duty_at_180_degrees,
+            inverted,
+        }
+    }
+}
+
+impl
+    PwmServoConstructor<
+        '_,
+        gpio0::Pin13<Unknown>,
+        gpio0::Pin13<IOF1<Invert>>,
+        PWM2,
+    > for PwmServo<'_, gpio0::Pin12<IOF1<Invert>>, PWM2>
+{
+    fn new(
+        pin: gpio0::Pin13<Unknown>,
+        pwm: &PWM2,
+        duty_at_0_degrees: u16,
+        duty_at_180_degrees: u16,
+        inverted: bool,
+    ) -> PwmServo<'_, gpio0::Pin13<IOF1<Invert>>, PWM2> {
+        pwm.cfg
+            .write(|w| unsafe { w.enalways().bit(true).scale().bits(6) });
+
+        PwmServo {
+            _pin: pin.into_inverted_iof1(),
+            pwm: pwm,
+            duty_at_0_degrees,
+            duty_at_180_degrees,
+            inverted,
+        }
+    }
+}
+
 impl Servo for PwmServo<'_, gpio0::Pin20<IOF1<Invert>>, PWM1> {
     fn read(&self) -> Degrees {
         duty_to_degrees(
@@ -377,6 +533,50 @@ impl Servo for PwmServo<'_, gpio0::Pin19<IOF1<Invert>>, PWM1> {
     }
 }
 
+impl Servo for PwmServo<'_, gpio0::Pin21<IOF1<Invert>>, PWM1> {
+    fn read(&self) -> Degrees {
+        duty_to_degrees(
+            self.duty_at_0_degrees,
+            self.duty_at_180_degrees,
+            self.inverted,
+            self.pwm.cmp2.read().value().bits(),
+        )
+    }
+
+    fn write(&self, degrees: Degrees) -> () {
+        self.pwm.cmp2.write(|w| unsafe {
+            w.value().bits(degrees_to_duty(
+                self.duty_at_0_degrees,
+                self.duty_at_180_degrees,
+                self.inverted,
+                degrees,
+            ))
+        });
+    }
+}
+
+impl Servo for PwmServo<'_, gpio0::Pin22<IOF1<Invert>>, PWM1> {
+    fn read(&self) -> Degrees {
+        duty_to_degrees(
+            self.duty_at_0_degrees,
+            self.duty_at_180_degrees,
+            self.inverted,
+            self.pwm.cmp3.read().value().bits(),
+        )
+    }
+
+    fn write(&self, degrees: Degrees) -> () {
+        self.pwm.cmp3.write(|w| unsafe {
+            w.value().bits(degrees_to_duty(
+                self.duty_at_0_degrees,
+                self.duty_at_180_degrees,
+                self.inverted,
+                degrees,
+            ))
+        });
+    }
+}
+
 impl Servo for PwmServo<'_, gpio0::Pin10<IOF1<Invert>>, PWM2> {
     fn read(&self) -> Degrees {
         duty_to_degrees(
@@ -411,6 +611,50 @@ impl Servo for PwmServo<'_, gpio0::Pin11<IOF1<Invert>>, PWM2> {
 
     fn write(&self, degrees: Degrees) -> () {
         self.pwm.cmp1.write(|w| unsafe {
+            w.value().bits(degrees_to_duty(
+                self.duty_at_0_degrees,
+                self.duty_at_180_degrees,
+                self.inverted,
+                degrees,
+            ))
+        });
+    }
+}
+
+impl Servo for PwmServo<'_, gpio0::Pin12<IOF1<Invert>>, PWM2> {
+    fn read(&self) -> Degrees {
+        duty_to_degrees(
+            self.duty_at_0_degrees,
+            self.duty_at_180_degrees,
+            self.inverted,
+            self.pwm.cmp2.read().value().bits(),
+        )
+    }
+
+    fn write(&self, degrees: Degrees) -> () {
+        self.pwm.cmp2.write(|w| unsafe {
+            w.value().bits(degrees_to_duty(
+                self.duty_at_0_degrees,
+                self.duty_at_180_degrees,
+                self.inverted,
+                degrees,
+            ))
+        });
+    }
+}
+
+impl Servo for PwmServo<'_, gpio0::Pin13<IOF1<Invert>>, PWM2> {
+    fn read(&self) -> Degrees {
+        duty_to_degrees(
+            self.duty_at_0_degrees,
+            self.duty_at_180_degrees,
+            self.inverted,
+            self.pwm.cmp3.read().value().bits(),
+        )
+    }
+
+    fn write(&self, degrees: Degrees) -> () {
+        self.pwm.cmp3.write(|w| unsafe {
             w.value().bits(degrees_to_duty(
                 self.duty_at_0_degrees,
                 self.duty_at_180_degrees,
