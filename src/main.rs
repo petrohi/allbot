@@ -96,7 +96,13 @@ fn main() -> ! {
     allbot.init();
 
     loop {
-        allbot.test(&mut sleep, 2000);
+        allbot.look_right(&mut sleep, 500);
+        allbot.wave_front_right(&mut sleep, 2, 250);
+        sleep.delay_ms(1000u32);
+
+        allbot.look_left(&mut sleep, 500);
+        allbot.wave_front_left(&mut sleep, 2, 250);
+        sleep.delay_ms(1000u32);
     }
 }
 
@@ -113,42 +119,134 @@ struct ALLBOT<'a> {
 
 impl<'a> ALLBOT<'a> {
     fn init(&self) {
-        self.hip_front_left.write(90.0.degrees());
-        self.hip_front_right.write(90.0.degrees());
-        self.hip_rear_left.write(90.0.degrees());
-        self.hip_rear_right.write(90.0.degrees());
-        self.knee_front_left.write(90.0.degrees());
-        self.knee_front_right.write(90.0.degrees());
-        self.knee_rear_left.write(90.0.degrees());
-        self.knee_rear_right.write(90.0.degrees());
+        self.hip_front_left.write(45.0.degrees());
+        self.hip_front_right.write(45.0.degrees());
+        self.hip_rear_left.write(45.0.degrees());
+        self.hip_rear_right.write(45.0.degrees());
+        self.knee_front_left.write(45.0.degrees());
+        self.knee_front_right.write(45.0.degrees());
+        self.knee_rear_left.write(45.0.degrees());
+        self.knee_rear_right.write(45.0.degrees());
     }
 
-    fn test(&self, sleep: &mut Sleep, speed: u32) {
+    fn wave_front_right(&self, sleep: &mut Sleep, waves: u32, speed: u32) {
         animate(
-            &[
-                Move::new(self.hip_front_left, 45.0.degrees()),
-                Move::new(self.hip_front_right, 45.0.degrees()),
-                Move::new(self.hip_rear_left, 45.0.degrees()),
-                Move::new(self.hip_rear_right, 45.0.degrees()),
-                Move::new(self.knee_front_left, 45.0.degrees()),
-                Move::new(self.knee_front_right, 45.0.degrees()),
-                Move::new(self.knee_rear_left, 45.0.degrees()),
-                Move::new(self.knee_rear_right, 45.0.degrees()),
-            ],
+            &[Move::new(self.knee_front_right, 180.0.degrees())],
             speed,
             sleep,
         );
 
+        for _ in 0..waves {
+            animate(
+                &[Move::new(self.hip_front_right, 0.0.degrees())],
+                speed,
+                sleep,
+            );
+            animate(
+                &[Move::new(self.hip_front_right, 65.0.degrees())],
+                speed,
+                sleep,
+            );
+            animate(
+                &[Move::new(self.hip_front_right, 0.0.degrees())],
+                speed,
+                sleep,
+            );
+            animate(
+                &[Move::new(self.hip_front_right, 45.0.degrees())],
+                speed,
+                sleep,
+            );
+        }
+
+        animate(
+            &[Move::new(self.knee_front_right, 45.0.degrees())],
+            speed,
+            sleep,
+        );
+    }
+
+    fn wave_front_left(&self, sleep: &mut Sleep, waves: u32, speed: u32) {
+        animate(
+            &[Move::new(self.knee_front_left, 180.0.degrees())],
+            speed,
+            sleep,
+        );
+
+        for _ in 0..waves {
+            animate(
+                &[Move::new(self.hip_front_left, 0.0.degrees())],
+                speed,
+                sleep,
+            );
+            animate(
+                &[Move::new(self.hip_front_left, 65.0.degrees())],
+                speed,
+                sleep,
+            );
+            animate(
+                &[Move::new(self.hip_front_left, 0.0.degrees())],
+                speed,
+                sleep,
+            );
+            animate(
+                &[Move::new(self.hip_front_left, 45.0.degrees())],
+                speed,
+                sleep,
+            );
+        }
+
+        animate(
+            &[Move::new(self.knee_front_left, 45.0.degrees())],
+            speed,
+            sleep,
+        );
+    }
+
+    fn look_left(&self, sleep: &mut Sleep, speed: u32) {
         animate(
             &[
-                Move::new(self.hip_front_left, 90.0.degrees()),
-                Move::new(self.hip_front_right, 90.0.degrees()),
-                Move::new(self.hip_rear_left, 90.0.degrees()),
-                Move::new(self.hip_rear_right, 90.0.degrees()),
-                Move::new(self.knee_front_left, 90.0.degrees()),
-                Move::new(self.knee_front_right, 90.0.degrees()),
-                Move::new(self.knee_rear_left, 90.0.degrees()),
-                Move::new(self.knee_rear_right, 90.0.degrees()),
+                Move::new(self.hip_rear_left, 80.0.degrees()),
+                Move::new(self.hip_rear_right, 10.0.degrees()),
+                Move::new(self.hip_front_left, 10.0.degrees()),
+                Move::new(self.hip_rear_right, 80.0.degrees()),
+            ],
+            speed,
+            sleep,
+        );
+        sleep.delay_ms(speed / 2);
+
+        animate(
+            &[
+                Move::new(self.hip_rear_left, 45.0.degrees()),
+                Move::new(self.hip_rear_right, 45.0.degrees()),
+                Move::new(self.hip_front_left, 45.0.degrees()),
+                Move::new(self.hip_rear_right, 45.0.degrees()),
+            ],
+            speed,
+            sleep,
+        );
+    }
+
+    fn look_right(&self, sleep: &mut Sleep, speed: u32) {
+        animate(
+            &[
+                Move::new(self.hip_rear_right, 80.0.degrees()),
+                Move::new(self.hip_rear_left, 10.0.degrees()),
+                Move::new(self.hip_front_right, 10.0.degrees()),
+                Move::new(self.hip_rear_left, 80.0.degrees()),
+            ],
+            speed,
+            sleep,
+        );
+        sleep.delay_ms(speed / 2);
+
+        animate(
+            &[
+                Move::new(self.hip_rear_right, 45.0.degrees()),
+                Move::new(self.hip_rear_left, 45.0.degrees()),
+                Move::new(self.hip_front_right, 45.0.degrees()),
+                Move::new(self.hip_rear_left, 45.0.degrees()),
             ],
             speed,
             sleep,
