@@ -13,6 +13,8 @@ panic-halt = "0.2.0"
 riscv = "0.5.3"
 riscv-rt = "0.6.0"
 heapless = "0.5.4"
+wyhash = "0.3.0"
+rand_core = "0.4.2"
 
 # this lets you use `cargo fix`!
 [[bin]]
